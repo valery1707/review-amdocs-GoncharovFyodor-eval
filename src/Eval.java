@@ -32,14 +32,12 @@ public class Eval {
 
       // Current token is a number, push it to stack for numbers
       if (tokens[i] >= '0' && tokens[i] <= '9') {
-        StringBuilder sbuf = new StringBuilder();
-
         // There may be more than one digit in a number
-        while (i < tokens.length && tokens[i] >= '0' && tokens[i] <= '9') {
-          sbuf.append(tokens[i++]);
-        }
-        i--;
-        values.push(Integer.parseInt(sbuf.toString()));
+        int start = i;
+        do {
+          i++;
+        } while (i < tokens.length && tokens[i] >= '0' && tokens[i] <= '9');
+        values.push(Integer.valueOf(expression.substring(start, i--)));
       }
 
       // Current token is an opening brace, push it to 'ops'
