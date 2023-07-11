@@ -55,7 +55,7 @@ public class Eval {
 
       // Current token is an operator.
       else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
-        while (!ops.isEmpty() && hasPrecedence(tokens[i], ops.peek())) {
+        while (!ops.isEmpty() && hasPrecedence(ops.peek())) {
           values.push(applyOp(ops.pop(), values.pop(), values.pop()));
         }
 
@@ -71,12 +71,9 @@ public class Eval {
     return values.pop();
   }
 
-  // Returns true if 'op2' has higher or same precedence as 'op1', otherwise returns false.
-  public static boolean hasPrecedence(char op1, char op2) {
-    if (op2 == '(' || op2 == ')') {
-      return false;
-    }
-    return (op1 != '*' && op1 != '/') || (op2 != '+' && op2 != '-');
+  // Returns true if 'op' can be calculated now.
+  public static boolean hasPrecedence(char op) {
+    return op == '*' || op == '/';
   }
 
   // A utility method to apply an operator 'op' on operands 'a' and 'b'. Return the result.
