@@ -30,12 +30,7 @@ public class Eval {
     for (int i = 0; i < tokens.length; i++) {
       if (tokens[i] >= '0' && tokens[i] <= '9') {
         // Current token is a number, push it to stack for numbers
-        int start = i;
-        do {
-          i++;
-          // There may be more than one digit in a number
-        } while (i < tokens.length && tokens[i] >= '0' && tokens[i] <= '9');
-        values.push(Integer.valueOf(expression.substring(start, i--)));
+        i += readValue(expression, tokens, values, i);
       } else if (tokens[i] == '(') {
         // Current token is an opening brace, push it to 'ops'
         ops.push(tokens[i]);
@@ -54,6 +49,16 @@ public class Eval {
     applyOps(ops, values, __ -> true);
 
     return values.pop();
+  }
+
+  private static int readValue(String expression, char[] tokens, Deque<Integer> values, int start) {
+    int end = start;
+    do {
+      end++;
+      // There may be more than one digit in a number
+    } while (end < tokens.length && tokens[end] >= '0' && tokens[end] <= '9');
+    values.push(Integer.valueOf(expression.substring(start, end)));
+    return end - start - 1;
   }
 
   // Returns true if 'op' can be calculated now.
