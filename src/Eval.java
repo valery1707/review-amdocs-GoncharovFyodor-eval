@@ -14,6 +14,7 @@ public class Eval {
     test("4+2*(5-2)", 10);
     test("144-2*(5-2)", 138);
     test(" 1 + 2 + 3 + 4 + 5", 15);
+    test("1a + 2b", 3);
   }
 
   public static int evaluate(String expression) {
@@ -25,11 +26,6 @@ public class Eval {
     Deque<Character> ops = new ArrayDeque<>();
 
     for (int i = 0; i < tokens.length; i++) {
-      // Current token is a whitespace, skip it
-      if (tokens[i] == ' ') {
-        continue;
-      }
-
       // Current token is a number, push it to stack for numbers
       if (tokens[i] >= '0' && tokens[i] <= '9') {
         // There may be more than one digit in a number
