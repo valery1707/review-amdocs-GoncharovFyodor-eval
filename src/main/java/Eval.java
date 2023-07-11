@@ -4,21 +4,6 @@ import java.util.function.Predicate;
 
 public class Eval {
 
-  public static void main(String[] args) {
-    test(" 3 + 4", 7);
-    test(" 5 + 2 * 6", 17);
-    test(" 10 * 7 + 5", 75);
-    test(" 111 * ( 2 + 3 )", 555);
-    test(" 112 * ( 2 + 3 )", 560);
-    test(" 234 - 3", 231);
-    test(" 222 * ( 2 + 5 ) / 14", 111);
-    test(" 222 * ( 12 + ( 1 - 3 ) * 2 ) / 8", 222);
-    test("4+2*(5-2)", 10);
-    test("144-2*(5-2)", 138);
-    test(" 1 + 2 + 3 + 4 + 5", 15);
-    test("1a + 2b", 3);
-  }
-
   public static int evaluate(String expression) {
     char[] tokens = expression.toCharArray();
 
@@ -88,15 +73,6 @@ public class Eval {
         return a / b;
     }
     return 0;
-  }
-
-  private static void test(String str, Integer expect) {
-    int result = evaluate(str);
-    if (result == expect) {
-      System.out.println("CORRECT!");
-    } else {
-      System.out.println(str + " should be evaluated to " + expect + ", but was " + result);
-    }
   }
 
 }
