@@ -13,6 +13,7 @@ public class Eval {
     test(" 222 * ( 12 + ( 1 - 3 ) * 2 ) / 8", 222);
     test("4+2*(5-2)", 10);
     test("144-2*(5-2)", 138);
+    test(" 1 + 2 + 3 + 4 + 5", 15);
   }
 
   public static int evaluate(String expression) {
@@ -53,15 +54,15 @@ public class Eval {
 
       // Current token is an operator.
       else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
-        while (!ops.isEmpty() && hasPrecedence(tokens[i], ops.peek()) && values.size()>1)
-          values.push(applyOp(ops.peek(), values.pop(), values.pop()));
+        while (!ops.isEmpty() && hasPrecedence(tokens[i], ops.peek()))
+          values.push(applyOp(ops.pop(), values.pop(), values.pop()));
 
         ops.push(tokens[i]);
       }
     }
 
     // Entire expression has been parsed at this point, apply remaining ops to remaining values
-    while (!ops.isEmpty() && values.size() > 1) {
+    while (!ops.isEmpty()) {
       values.push(applyOp(ops.pop(), values.pop(), values.pop()));
     }
 
