@@ -1,7 +1,9 @@
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.function.Predicate;
 
 public class Eval {
+
   public static void main(String[] args) {
     test(" 3 + 4", 7);
     test(" 5 + 2 * 6", 17);
@@ -26,43 +28,30 @@ public class Eval {
     Deque<Character> ops = new ArrayDeque<>();
 
     for (int i = 0; i < tokens.length; i++) {
-      // Current token is a number, push it to stack for numbers
       if (tokens[i] >= '0' && tokens[i] <= '9') {
-        // There may be more than one digit in a number
+        // Current token is a number, push it to stack for numbers
         int start = i;
         do {
           i++;
+          // There may be more than one digit in a number
         } while (i < tokens.length && tokens[i] >= '0' && tokens[i] <= '9');
         values.push(Integer.valueOf(expression.substring(start, i--)));
-      }
-
-      // Current token is an opening brace, push it to 'ops'
-      else if (tokens[i] == '(') {
+      } else if (tokens[i] == '(') {
+        // Current token is an opening brace, push it to 'ops'
         ops.push(tokens[i]);
-      }
-
+      } else if (tokens[i] == ')') {
         // Closing brace encountered, solve entire brace
-      else if (tokens[i] == ')') {
-        while (ops.peek() != '(') {
-          values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-        }
+        applyOps(ops, values, op -> op != '(');
         ops.pop();
-      }
-
-      // Current token is an operator.
-      else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
-        while (!ops.isEmpty() && hasPrecedence(ops.peek())) {
-          values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-        }
-
+      } else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
+        // Current token is an operator.
+        applyOps(ops, values, Eval::hasPrecedence);
         ops.push(tokens[i]);
       }
     }
 
     // Entire expression has been parsed at this point, apply remaining ops to remaining values
-    while (!ops.isEmpty()) {
-      values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-    }
+    applyOps(ops, values, __ -> true);
 
     return values.pop();
   }
@@ -70,6 +59,12 @@ public class Eval {
   // Returns true if 'op' can be calculated now.
   public static boolean hasPrecedence(char op) {
     return op == '*' || op == '/';
+  }
+
+  private static void applyOps(Deque<Character> ops, Deque<Integer> values, Predicate<Character> opTest) {
+    while (!ops.isEmpty() && opTest.test(ops.peek())) {
+      values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+    }
   }
 
   // A utility method to apply an operator 'op' on operands 'a' and 'b'. Return the result.
@@ -98,4 +93,5 @@ public class Eval {
       System.out.println(str + " should be evaluated to " + expect + ", but was " + result);
     }
   }
+
 }
